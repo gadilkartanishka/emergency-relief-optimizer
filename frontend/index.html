@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emergency Relief Resource Optimizer</title>
+    <meta name="description" content="A Greedy, Dynamic Programming, and Branch and Bound resource allocation system for humanitarian crisis logistics.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;1,6..72,300&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="app-nav">
+        <div class="nav-inner">
+            <div class="brand-group">
+                <span class="brand-glyph">✦</span>
+                <div class="brand-info">
+                    <span class="brand-title">Emergency Relief Optimizer</span>
+                </div>
+            </div>
+
+            <nav class="nav-scenarios" aria-label="Preset Scenarios">
+                <button id="btn-load-sample" class="nav-pill active">Reset to Sample (Section 10)</button>
+            </nav>
+        </div>
+    </header>
+
+    <section class="hero-section">
+        <div class="hero-inner">
+            <div class="hero-badge" style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
+                <span class="mono-badge hero-mono-badge"><span class="live-dot"></span>OPTIMIZATION ENGINE &bull; 0/1 MULTI-KNAPSACK</span>
+            </div>
+            <h1 class="hero-headline">Emergency Relief <span class="hero-highlight">Resource Optimizer</span></h1>
+            <p class="hero-subtext">
+                Humanitarian relief distribution system balancing vehicle capacities and kit priority values using 
+                <span class="hero-algo-tag tag-greedy">Greedy ratios</span>, 
+                <span class="hero-algo-tag tag-dp">Dynamic Programming</span>, and 
+                <span class="hero-algo-tag tag-bnb">Branch &amp; Bound</span>.
+            </p>
+        </div>
+    </section>
+
+    <main class="main-wrapper">
+        <div class="workspace-stack">
+
+            <section class="white-card">
+                <div class="card-header">
+                    <div>
+                        <span class="card-category">DISPATCH INVENTORY</span>
+                        <h2 class="card-title">Available Relief Kits</h2>
+                    </div>
+                    <span id="inventory-badge" class="status-badge">4 Kits Available</span>
+                </div>
+
+                <div class="table-frame">
+                    <table class="editorial-table full-table" id="inventory-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 14%;">Kit ID</th>
+                                <th style="width: 28%;">Target Destination</th>
+                                <th style="width: 14%;">Unit Weight</th>
+                                <th style="width: 14%;">Priority Score</th>
+                                <th style="width: 14%;">Density (Ratio)</th>
+                                <th style="width: 10%;">Quantity</th>
+                                <th style="width: 6%; text-align: center;">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="inventory-tbody"></tbody>
+                    </table>
+                </div>
+
+                <form id="add-kit-form" class="editorial-form">
+                    <span class="form-title">Register Additional Relief Kit</span>
+                    <div class="form-grid-spacious">
+                        <div class="input-field">
+                            <label for="kit-id">Kit ID</label>
+                            <input type="text" id="kit-id" placeholder="e.g. K5" required>
+                        </div>
+                        <div class="input-field flex-2">
+                            <label for="kit-dest">Destination Area</label>
+                            <input type="text" id="kit-dest" placeholder="e.g. West Shelter Sector" required>
+                        </div>
+                        <div class="input-field">
+                            <label for="kit-weight">Weight (kg)</label>
+                            <input type="number" id="kit-weight" min="1" max="500" placeholder="5" required>
+                        </div>
+                        <div class="input-field">
+                            <label for="kit-score">Priority Score</label>
+                            <input type="number" id="kit-score" min="1" max="500" placeholder="40" required>
+                        </div>
+                        <div class="input-field">
+                            <label for="kit-qty">Qty</label>
+                            <input type="number" id="kit-qty" min="1" max="20" value="1" required>
+                        </div>
+                        <div class="input-field button-align">
+                            <button type="submit" class="frosted-btn">+ Add Kit</button>
+                        </div>
+                    </div>
+                </form>
+            </section>
+
+            <section class="white-card">
+                <div class="card-header">
+                    <div>
+                        <span class="card-category">TRANSPORT LOGISTICS</span>
+                        <h2 class="card-title">Vehicle Fleet Capacities</h2>
+                    </div>
+                    <span id="fleet-badge" class="status-badge">2 Trucks Active</span>
+                </div>
+
+                <div id="trucks-list" class="trucks-grid"></div>
+
+                <form id="add-truck-form" class="editorial-form inline-truck-form">
+                    <span class="form-title">Add Transport Vehicle</span>
+                    <div class="inline-truck-inputs">
+                        <input type="text" id="truck-id" placeholder="Truck ID (e.g. T3)" required>
+                        <input type="number" id="truck-cap" min="1" max="500" placeholder="Maximum Payload in kg" required>
+                        <button type="submit" class="frosted-btn">+ Add Vehicle</button>
+                    </div>
+                </form>
+            </section>
+
+            <section class="white-card">
+                <div class="card-header">
+                    <div>
+                        <span class="card-category">OPTIMIZATION PARADIGM</span>
+                        <h2 class="card-title">Select Algorithm</h2>
+                    </div>
+                </div>
+
+                <div class="algo-pills-row" role="tablist">
+                    <button class="algo-pill" data-algo="GREEDY">
+                        <span class="algo-pill-title">Greedy Algorithm</span>
+                        <span class="algo-pill-sub">Local density ratio (v<sub>i</sub> / w<sub>i</sub>) &bull; O(n log n)</span>
+                    </button>
+                    <button class="algo-pill active" data-algo="DYNAMIC_PROGRAMMING">
+                        <span class="algo-pill-title">Dynamic Programming</span>
+                        <span class="algo-pill-sub">0/1 Knapsack optimal memoization &bull; O(n &times; W)</span>
+                    </button>
+                    <button class="algo-pill" data-algo="BRANCH_AND_BOUND">
+                        <span class="algo-pill-title">Branch &amp; Bound</span>
+                        <span class="algo-pill-sub">State tree with fractional relaxation &bull; Optimal</span>
+                    </button>
+                </div>
+
+                <div class="metrics-row" id="execution-meta">
+                    <div class="metric-item">
+                        <span class="metric-label">TOTAL PRIORITY SCORE</span>
+                        <span class="metric-value highlight" id="stat-score">180</span>
+                    </div>
+                    <div class="metric-item">
+                        <span class="metric-label">FLEET PAYLOAD ALLOCATED</span>
+                        <span class="metric-value" id="stat-weight">18 kg / 20 kg</span>
+                    </div>
+                    <div class="metric-item">
+                        <span class="metric-label">FLEET CAPACITY UTILIZATION</span>
+                        <span class="metric-value" id="stat-util">90.0%</span>
+                    </div>
+                    <div class="metric-item">
+                        <span class="metric-label">ALGORITHM RUNTIME</span>
+                        <span class="metric-value mono" id="stat-time">0.018 ms</span>
+                    </div>
+                </div>
+            </section>
+
+            <section class="white-card">
+                <div class="card-header">
+                    <div>
+                        <span class="card-category">DISPATCH BREAKDOWN</span>
+                        <h2 class="card-title">Truck Loadings &amp; Kit Assignments</h2>
+                    </div>
+                </div>
+
+                <div id="truck-visual-container" class="truck-cards-grid"></div>
+                <div id="unallocated-container" class="unallocated-section"></div>
+            </section>
+
+            <section class="white-card">
+                <div class="card-header">
+                    <div>
+                        <span class="card-category">ALGORITHMIC BENCHMARK</span>
+                        <h2 class="card-title">Side-by-Side Algorithm Comparison Matrix</h2>
+                    </div>
+                </div>
+
+                <div class="table-frame">
+                    <table class="editorial-table full-table" id="comparison-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 22%;">Algorithm</th>
+                                <th style="width: 18%;">Time Complexity</th>
+                                <th style="width: 10%;">Kits Loaded</th>
+                                <th style="width: 12%;">Weight</th>
+                                <th style="width: 12%;">Priority Score</th>
+                                <th style="width: 12%;">Utilization</th>
+                                <th style="width: 14%;">Runtime</th>
+                            </tr>
+                        </thead>
+                        <tbody id="comparison-tbody"></tbody>
+                    </table>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <div id="printable-report" class="print-only"></div>
+
+    <script src="app.js"></script>
+</body>
+</html>

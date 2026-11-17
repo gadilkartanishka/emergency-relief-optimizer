@@ -1,0 +1,100 @@
+================================================================================
+                 EMERGENCY RELIEF RESOURCE OPTIMIZER
+       A Greedy, Dynamic Programming & Branch-and-Bound Allocation System
+       ADSA Lab Mini Project | AISSMS IOIT, Pune | Academic Year 2026-27
+       Student: Tanishka Gadilkar | PRN: 24310141 | Roll No: 67 | TY IT-B
+================================================================================
+
+>>> EXECUTING SAMPLE SCENARIO FROM PROJECT REPORT (SECTION 10) <<<
+
+=========================== CURRENT RELIEF INVENTORY ===========================
+Kit ID     Destination          Weight (kg)  Priority Score  Ratio (v/w)  Quantity  
+--------------------------------------------------------------------------------
+K1         North Area           6            60              10.00        1         
+K2         East Area            4            50              12.50        1         
+K3         North Area           5            45              9.00         1         
+K4         South Area           3            25              8.33         1         
+Total Kits: 4 (Physical Units: 4) | Total Weight: 18 kg | Total Priority Score: 180
+
+============================= TRANSPORT FLEET =============================
+Truck ID        Max Payload Capacity (kg)
+-------------------------------------------------------------------------
+T1              10 kg               
+T2              10 kg               
+Total Fleet Trucks: 2 | Combined Fleet Payload: 20 kg
+=========================================================================
+
+
+Running Dynamic Programming (Optimal 0/1 Knapsack Allocation):
+========================================================================
+          ALLOCATION RESULTS: DYNAMIC PROGRAMMING
+========================================================================
+Truck      Selected Kits             Total Weight    Priority Score 
+------------------------------------------------------------------------
+T1         K1, K2                    10 kg           110            
+T2         K3, K4                    8 kg            70             
+------------------------------------------------------------------------
+Summary:
+  Total kits allocated:        4
+  Total weight allocated:      18 kg
+  Total priority score:        180
+  Total fleet capacity:        20 kg
+  Unused capacity:             2 kg
+  Fleet capacity utilization:  90.0%
+  Execution Time:              0.171 ms (171417 ns)
+  Feasibility Status:          FEASIBLE (No capacity exceeded)
+========================================================================
+
+
+Running Complete Comparison on Report Sample Data:
+
+==========================================================================================
+                     ALGORITHM PERFORMANCE COMPARISON MATRIX
+==========================================================================================
+Algorithm                Kits Loaded  Weight (kg)    Priority Score   Utilization      Time (ms)   
+------------------------------------------------------------------------------------------
+Greedy Algorithm         4            18 kg          180              90.0             1.8075      
+Dynamic Programming      4            18 kg          180              90.0             0.0118      
+Branch and Bound         4            18 kg          180              90.0             0.8953      
+==========================================================================================
+
+Detailed Truck Breakdown for each algorithm:
+
+--- [Greedy Algorithm] ---
+  T1 -> Kits: [K2, K1] | Weight: 10/10 kg | Priority Score: 110 | Rem: 0 kg
+  T2 -> Kits: [K3, K4] | Weight: 8/10 kg | Priority Score: 70 | Rem: 2 kg
+
+--- [Dynamic Programming] ---
+  T1 -> Kits: [K1, K2] | Weight: 10/10 kg | Priority Score: 110 | Rem: 0 kg
+  T2 -> Kits: [K3, K4] | Weight: 8/10 kg | Priority Score: 70 | Rem: 2 kg
+
+--- [Branch and Bound] ---
+  T1 -> Kits: [K1, K2] | Weight: 10/10 kg | Priority Score: 110 | Rem: 0 kg
+  T2 -> Kits: [K3, K4] | Weight: 8/10 kg | Priority Score: 70 | Rem: 2 kg
+
+==========================================================================================
+                     ALGORITHM PERFORMANCE COMPARISON MATRIX
+==========================================================================================
+Algorithm                Kits Loaded  Weight (kg)    Priority Score   Utilization      Time (ms)   
+------------------------------------------------------------------------------------------
+Greedy Algorithm         9            56 kg          595              93.3             2.8050      
+Dynamic Programming      9            59 kg          600              98.3             0.0406      
+Branch and Bound         9            59 kg          600              98.3             0.7922      
+==========================================================================================
+
+Detailed Truck Breakdown for each algorithm:
+
+--- [Greedy Algorithm] ---
+  T-ALPHA -> Kits: [K09-SAT-RADIO, K04-BABYCARE, K03-WATER-PUR#1, K03-WATER-PUR#2, K07-BLANKETS#1] | Weight: 24/25 kg | Priority Score: 325 | Rem: 1 kg
+  T-BETA -> Kits: [K01-TRAUMA, K07-BLANKETS#2, K08-SANITATION] | Weight: 20/20 kg | Priority Score: 190 | Rem: 0 kg
+  T-GAMMA -> Kits: [K02-RATIONS#1] | Weight: 12/15 kg | Priority Score: 80 | Rem: 3 kg
+
+--- [Dynamic Programming] ---
+  T-ALPHA -> Kits: [K03-WATER-PUR#1, K03-WATER-PUR#2, K04-BABYCARE, K07-BLANKETS#1, K09-SAT-RADIO] | Weight: 24/25 kg | Priority Score: 325 | Rem: 1 kg
+  T-BETA -> Kits: [K01-TRAUMA, K07-BLANKETS#2, K08-SANITATION] | Weight: 20/20 kg | Priority Score: 190 | Rem: 0 kg
+  T-GAMMA -> Kits: [K05-SHELTER] | Weight: 15/15 kg | Priority Score: 85 | Rem: 0 kg
+
+--- [Branch and Bound] ---
+  T-ALPHA -> Kits: [K03-WATER-PUR#1, K03-WATER-PUR#2, K04-BABYCARE, K07-BLANKETS#1, K09-SAT-RADIO] | Weight: 24/25 kg | Priority Score: 325 | Rem: 1 kg
+  T-BETA -> Kits: [K01-TRAUMA, K07-BLANKETS#2, K08-SANITATION] | Weight: 20/20 kg | Priority Score: 190 | Rem: 0 kg
+  T-GAMMA -> Kits: [K05-SHELTER] | Weight: 15/15 kg | Priority Score: 85 | Rem: 0 kg
